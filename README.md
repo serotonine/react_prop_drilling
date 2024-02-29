@@ -94,6 +94,13 @@ export default function Cart({ onUpdateItemQuantity }) {
 
 ```
 
-### Outsourcing Context & St ate into a separate provider
+### Outsourcing Context & State into a separate provider
+
+Let's create a wrapping CartContextProvider component
+instead of setting all logic in the App.
 
 https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/8298056#questions/14817140
+
+## Section Exercice
+
+https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/quiz/6070576#questions
