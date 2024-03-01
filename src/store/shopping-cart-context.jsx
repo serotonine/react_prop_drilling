@@ -40,7 +40,7 @@ function shoppingCartReducer(state, action) {
         items: updatedItems,
       };
       break;
-    case "UPDATE_CART_ITEM_QUANTITY":
+    case "UPDATE_ITEM_CART_QUANTITY":
       //const updatedItems = [...state.items];
       const updatedItemIndex = updatedItems.findIndex(
         (item) => item.id === action.id
@@ -100,7 +100,7 @@ export default function CartContextProvider({ children }) {
     // Call to reducer action function.
     // Param => object.
     shoppingCartDispatch({
-      type: "UPDATE_CART_CART_QUANTITY",
+      type: "UPDATE_ITEM_CART_QUANTITY",
       id: productId,
       amount: amount,
     });
