@@ -101,6 +101,22 @@ instead of setting all logic in the App.
 
 https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/8298056#questions/14817140
 
-## Section Exercice
+### useReducer() : another State manager
+
+A reducer is a function that reduce one or more complex values to a simpler one.
+https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/8244660#questions
+
+```
+// Execute function to set outside the component fct to not to be read on each re-evaluation.
+// 2 params => state and action to be executed.
+function valueStateReducer(state, action){
+    return state;
+}
+
+// Hook signature (into component fct).
+[valueState, dispatchValueState] = useReducer(valueStateReducer, initialValue)
+```
+
+## Context Exercice
 
 https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/quiz/6070576#questions

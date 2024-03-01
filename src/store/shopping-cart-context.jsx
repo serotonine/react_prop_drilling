@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { useState } from "react";
+import { createContext, useState, useReducer } from "react";
+import {} from "react";
 import { DUMMY_PRODUCTS } from "../dummy-products.js";
 
 // Pass an initial value in the param.
@@ -8,30 +8,14 @@ export const CartContext = createContext({
   addItemToCart: () => {},
   updateCartItemQuantity: () => {},
 });
-
-/*
- * Let's create a wrapping CartContextProvider component
- * instead of setting all logic in the App.
- */
-export default function CartContextProvider({ children }) {
-  // UseState.
-  const [shoppingCart, setShoppingCart] = useState({
-    items: [],
-  });
-
-  // Object to pass on all context wrapped components.
-  const _contextValue = {
-    items: shoppingCart.items,
-    addItemToCart: handleAddItemToCart,
-    updateCartItemQuantity: handleUpdateCartItemQuantity,
-  };
-
-  function handleAddItemToCart(id) {
-    setShoppingCart((prevShoppingCart) => {
-      const updatedItems = [...prevShoppingCart.items];
-
+// UseReducer dispatch function.
+function shoppingCartReducer(state, action) {
+  const updatedItems = [...state.items];
+  switch (action.type) {
+    case "ADD_ITEM_TO_CART":
+      //const updatedItems = [...state.items];
       const existingCartItemIndex = updatedItems.findIndex(
-        (cartItem) => cartItem.id === id
+        (cartItem) => cartItem.id === action.id
       );
       const existingCartItem = updatedItems[existingCartItemIndex];
 
@@ -42,33 +26,31 @@ export default function CartContextProvider({ children }) {
         };
         updatedItems[existingCartItemIndex] = updatedItem;
       } else {
-        const product = DUMMY_PRODUCTS.find((product) => product.id === id);
+        const product = DUMMY_PRODUCTS.find(
+          (product) => product.id === action.id
+        );
         updatedItems.push({
-          id: id,
+          id: action.id,
           name: product.title,
           price: product.price,
           quantity: 1,
         });
       }
-
       return {
         items: updatedItems,
       };
-    });
-  }
-
-  function handleUpdateCartItemQuantity(productId, amount) {
-    setShoppingCart((prevShoppingCart) => {
-      const updatedItems = [...prevShoppingCart.items];
+      break;
+    case "UPDATE_CART_ITEM_QUANTITY":
+      //const updatedItems = [...state.items];
       const updatedItemIndex = updatedItems.findIndex(
-        (item) => item.id === productId
+        (item) => item.id === action.id
       );
 
       const updatedItem = {
         ...updatedItems[updatedItemIndex],
       };
 
-      updatedItem.quantity += amount;
+      updatedItem.quantity += action.amount;
 
       if (updatedItem.quantity <= 0) {
         updatedItems.splice(updatedItemIndex, 1);
@@ -77,8 +59,50 @@ export default function CartContextProvider({ children }) {
       }
 
       return {
+        ...state,
         items: updatedItems,
       };
+
+      break;
+    default:
+      return state;
+  }
+}
+
+/*
+ * Let's create a wrapping CartContextProvider component
+ * instead of setting all logic in the App.
+ */
+export default function CartContextProvider({ children }) {
+  // UseReducer.
+  const [shoppingCart, shoppingCartDispatch] = useReducer(shoppingCartReducer, {
+    items: [],
+  });
+
+  // Object to pass on all context wrapped components.
+  const _contextValue = {
+    items: shoppingCart.items,
+    addItemToCart: handleAddItemToCart,
+    updateCartItemQuantity: handleUpdateCartItemQuantity,
+  };
+
+  // useReducer instead of useState.
+  function handleAddItemToCart(id) {
+    // Call to reducer action function.
+    // Param => object.
+    shoppingCartDispatch({
+      type: "ADD_ITEM_TO_CART",
+      id: id,
+    });
+  }
+
+  function handleUpdateCartItemQuantity(productId, amount) {
+    // Call to reducer action function.
+    // Param => object.
+    shoppingCartDispatch({
+      type: "UPDATE_CART_CART_QUANTITY",
+      id: productId,
+      amount: amount,
     });
   }
 
